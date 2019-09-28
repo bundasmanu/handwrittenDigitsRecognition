@@ -1,5 +1,6 @@
 from sklearn import datasets,svm, metrics
 import matplotlib.pyplot as plt
+#from pyswarms.utils.functions import single_obj as fx
 
 #Obtencao do Dataset referente aos problema do reconhecimento de Digitos, sendo estes entre [0-9]
 global digitos, classifier
