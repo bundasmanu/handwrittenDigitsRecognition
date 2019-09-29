@@ -1,12 +1,9 @@
 
-class Bias:
+class Bias(object):
 
-    '''
-    Minhas Propriedades
-    '''
-
-    inputBias=None
-    outputBias=None
+    def __init__(self):
+        self.inputBias = None
+        self.outputBias = None
 
     def getInputBias(self):
         return self.inputBias

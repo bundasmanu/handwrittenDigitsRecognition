@@ -1,8 +1,11 @@
 from sklearn import datasets,svm, metrics
 import matplotlib.pyplot as plt
+import Network as nt
 #from pyswarms.utils.functions import single_obj as fx
 
 #Obtencao do Dataset referente aos problema do reconhecimento de Digitos, sendo estes entre [0-9]
+import Utils
+
 global digitos, classifier
 digitos=datasets.load_digits()
 classifier=svm.SVC(gamma=0.01) #gamma, corresponde a 1/nº de features, neste caso (64), nº de pixeis, parametros no website do scikit-learn svm.SVC
@@ -60,3 +63,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+    st1=Utils.Utils.INPUTS
+    st2=Utils.Utils.HIDDEN_LAYERS
+    st3=Utils.Utils.OUTPUTS
+    myNet= nt.Network(st1=64,st2=15,st3=10)

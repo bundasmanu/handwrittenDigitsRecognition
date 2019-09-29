@@ -1,12 +1,9 @@
 
-class Weight:
+class WeightRN(object):
 
-    '''
-    Minhas Propriedades
-    '''
-
-    inputWeights=None
-    outputWeights=None
+    def __init__(self):
+        self.inputWeights=None
+        self.outputWeights=None
 
     def getInputWeights(self):
         return self.inputWeights
