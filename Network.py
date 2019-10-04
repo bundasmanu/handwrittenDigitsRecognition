@@ -81,7 +81,7 @@ class Network(object):
         numberParticles= arrayParticulasDimensao.shape[0] #--> Numero de particulas, visto que o arrayParticulasDimensao[Particulas][Dimensoes] é constituido desta forma, o shape[0] retorna o numero de particulas existentes
 
         lossOfEveryParticle= [self.forwardPropagation(arrayParticulasDimensao[i],dataToLearn,targets) for i in range(numberParticles)] #-->A utilizacao do range cria uma sequencia ordenada de valores, dentro da gama indicada, em vez de utilizar i++
-        return lossOfEveryParticle #--> Retorno do Array Unidimensional, que contem a perda resultante da aplicacao da funcao objetivo (forward propagation), a cada uma das particulas
+        return np.array(lossOfEveryParticle) #--> Retorno do Array Unidimensional, que contem a perda resultante da aplicacao da funcao objetivo (forward propagation), a cada uma das particulas
 
     def predict(self,dataToLearn,arrayPositionsOfParticles):
 
@@ -95,8 +95,8 @@ class Network(object):
 
         self.weighss.inputWeights= arrayPositionsOfParticles[:(self.inputs*self.hiddenLayers)].reshape(self.inputs,self.hiddenLayers)
         self.bias.inputBias = arrayPositionsOfParticles[(self.inputs*self.hiddenLayers):((self.inputs*self.hiddenLayers)+self.hiddenLayers)].reshape(self.hiddenLayers,)
-        self.weighss.outputWeights= arrayPositionsOfParticles[((self.inputs*self.hiddenLayers)+self.hiddenLayers),(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))].reshape(self.hiddenLayers,self.outputs)
-        self.bias.outputBias= arrayPositionsOfParticles[(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs)),(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))+self.outputs].reshape(self.outputs,)
+        self.weighss.outputWeights= arrayPositionsOfParticles[((self.inputs*self.hiddenLayers)+self.hiddenLayers):(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))].reshape(self.hiddenLayers,self.outputs)
+        self.bias.outputBias= arrayPositionsOfParticles[(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs)):(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))+self.outputs].reshape(self.outputs,)
 
         '''
         Definicao agora do algoritmo forward propagation, mediante a logica,

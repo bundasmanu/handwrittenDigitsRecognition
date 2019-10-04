@@ -17,7 +17,7 @@ def listagemDadosDigitos(digits):
     print(digits.images)
     print(digits.target)
     print(digits.target_names)#--> [0 1 2 3 4 5 6 7 8 9]
-    print(digits.images.shape) 
+    print(digits.images.shape)
     print(digits.target.shape)
 
 '''Atraves dos prints efetuados atras, percebi
@@ -65,19 +65,25 @@ def main():
 if __name__ == "__main__":
     main()
 
-    itemsArgs={Utils.Utils.INPUTS: 64, Utils.Utils.HIDDEN_LAYERS: 15, Utils.Utils.OUTPUTS: 10}
+    '''
+    2 Parte do Problema
+    '''
+
+    itemsArgs={Utils.Utils.INPUTS: 64, Utils.Utils.HIDDEN_LAYERS: 20, Utils.Utils.OUTPUTS: 10}
     myNet= nt.Network(**itemsArgs)
+
     '''
     Aplicacao do Algoritmo PSO, recorrendo à funcao objetivo criada
+    
     '''
     x=Utils.Utils()
     randomValues= [x.generateRandomValue(0,1) for i in range(2)]
     optionsSwarmAlgorithm= {'c1': randomValues[0], 'c2': randomValues[1], 'w': 0.9} #-->Inercia aplicada uma percentagem de 90%, constante cognitiva e social, foi definido um valor random entre 0 e 1
     dimensions= (myNet.getInputs() * myNet.getHiddenLayers())+ myNet.getHiddenLayers() + (myNet.getHiddenLayers()* myNet.getOutputs()) + myNet.getOutputs()
-    optimizer= ps.single.GlobalBestPSO(n_particles=100, dimensions=dimensions, options=optionsSwarmAlgorithm)#-->Foram estipuladas 100 partículas, este nº pode variar, e devem ser testados outros valores, de modo a que seja possível estabelcer uma análise da atuacao deste algoritmo
+    optimizer= ps.single.GlobalBestPSO(n_particles=100, dimensions=dimensions, options=optionsSwarmAlgorithm)#-->Foram estipuladas 10 partículas, este nº pode variar, e devem ser testados outros valores, de modo a que seja possível estabelcer uma análise da atuacao deste algoritmo
 
-    arrayPartDim= optimizer.dimensions
-    print(arrayPartDim)
-    arraySwarm= numpy.zeros(optimizer.n_particles*optimizer.dimensions).reshape(optimizer.n_particles,optimizer.dimensions)
-    print(arraySwarm)
-    cost, pos = optimizer.optimize(myNet.aplicarFuncaoObjetivoTodasParticulas(arraySwarm,digitos.data,digitos.target), iters=1000)
+    cost, pos = optimizer.optimize(myNet.aplicarFuncaoObjetivoTodasParticulas, iters=10000 ,dataToLearn=digitos.data, targets=digitos.target) #Cons 100 iteracoes ideradas 100 iteracoes por particula
+
+    ##--> Obtencao da Accuracy passando o vetor de posicoes retornado da otimizacao do algoritmo PSO
+    acc=(myNet.predict(digitos.data,pos) == digitos.target).mean()
+    print(acc)
