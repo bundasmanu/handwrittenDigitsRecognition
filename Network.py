@@ -44,8 +44,8 @@ class Network(object):
 
         self.weighss.inputWeights= dimensions[:(self.inputs*self.hiddenLayers)].reshape(self.inputs,self.hiddenLayers)
         self.bias.inputBias = dimensions[(self.inputs*self.hiddenLayers):((self.inputs*self.hiddenLayers)+self.hiddenLayers)].reshape(self.hiddenLayers,)
-        self.weighss.outputWeights= dimensions[((self.inputs*self.hiddenLayers)+self.hiddenLayers),(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))].reshape(self.hiddenLayers,self.outputs)
-        self.bias.outputBias= dimensions[(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs)),(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))+self.outputs].reshape(self.outputs,)
+        self.weighss.outputWeights= dimensions[((self.inputs*self.hiddenLayers)+self.hiddenLayers):(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))].reshape(self.hiddenLayers,self.outputs)
+        self.bias.outputBias= dimensions[(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs)):(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))+self.outputs].reshape(self.outputs,)
 
         '''
         Definicao agora do algoritmo forward propagation, mediante a logica,
@@ -69,3 +69,43 @@ class Network(object):
         loss = np.sum(correctLogProbs)/ 1797
 
         return loss
+
+    def aplicarFuncaoObjetivoTodasParticulas(self,arrayParticulasDimensao,dataToLearn, targets):
+
+        '''
+            Input: Array Bidimensional--> contendo para cada particula, a posicao de cada uma destas, tendo em conta o nº de dimensoes existentes
+        :return:
+            Retorno: Array Unidimensional --> Contendo a perda resultante do calculo da funcao objetivo, para cada uma das particulas
+        '''
+
+        numberParticles= arrayParticulasDimensao.shape[0] #--> Numero de particulas, visto que o arrayParticulasDimensao[Particulas][Dimensoes] é constituido desta forma, o shape[0] retorna o numero de particulas existentes
+
+        lossOfEveryParticle= [self.forwardPropagation(arrayParticulasDimensao[i],dataToLearn,targets) for i in range(numberParticles)] #-->A utilizacao do range cria uma sequencia ordenada de valores, dentro da gama indicada, em vez de utilizar i++
+        return lossOfEveryParticle #--> Retorno do Array Unidimensional, que contem a perda resultante da aplicacao da funcao objetivo (forward propagation), a cada uma das particulas
+
+    def predict(self,dataToLearn,arrayPositionsOfParticles):
+
+        '''
+
+        :param dataToLearn: --> digitos.data, corresponde aos dados de aprendizagem
+        :param arrayPositionsOfParticles: --> vetor unidimensional, contendo a posicao otima encontrada pelo swarm, para cada uma das dimensoes existentes, se forem 163, contem um vetor unidimensional, com 1 linha e 163 colunas, correspondendo cada coluna à posicao otima de cada dimensao
+        :return:
+            Array Unidimensional --> com as previsoes ao longo do eixo das linhas, retornando o maior valor presente em cada uma das linhas, que se encontra no array bidimensional logits
+        '''
+
+        self.weighss.inputWeights= arrayPositionsOfParticles[:(self.inputs*self.hiddenLayers)].reshape(self.inputs,self.hiddenLayers)
+        self.bias.inputBias = arrayPositionsOfParticles[(self.inputs*self.hiddenLayers):((self.inputs*self.hiddenLayers)+self.hiddenLayers)].reshape(self.hiddenLayers,)
+        self.weighss.outputWeights= arrayPositionsOfParticles[((self.inputs*self.hiddenLayers)+self.hiddenLayers),(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))].reshape(self.hiddenLayers,self.outputs)
+        self.bias.outputBias= arrayPositionsOfParticles[(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs)),(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))+self.outputs].reshape(self.outputs,)
+
+        '''
+        Definicao agora do algoritmo forward propagation, mediante a logica,
+        que visualizei nos artigos que visualizei
+        '''
+        z1 = dataToLearn.dot(self.weighss.inputWeights) + self.bias.inputBias  # Pre Ativacao Camada 1
+        a1 = np.tanh(z1)  # Ativacao na Camada 1
+        z2 = a1.dot(self.weighss.outputWeights) + self.bias.outputBias  # Pre Ativacao Camada 2
+        logits = z2  # Logits para a Camada 2
+
+        y_pred= np.argmax(logits,axis=1) #Array Unidimensional --> com as previsoes ao longo do eixo das linhas, retornando o maior valor presente em cada uma das linhas, que se encontra no array bidimensional logits
+        return y_pred

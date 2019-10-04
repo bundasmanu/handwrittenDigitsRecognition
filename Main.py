@@ -1,7 +1,8 @@
 from sklearn import datasets,svm, metrics
 import matplotlib.pyplot as plt
 import Network as nt
-#from pyswarms.utils.functions import single_obj as fx
+import pyswarms as ps
+import numpy
 
 #Obtencao do Dataset referente aos problema do reconhecimento de Digitos, sendo estes entre [0-9]
 import Utils
@@ -63,7 +64,20 @@ def main():
 
 if __name__ == "__main__":
     main()
-    st1=Utils.Utils.INPUTS
-    st2=Utils.Utils.HIDDEN_LAYERS
-    st3=Utils.Utils.OUTPUTS
-    myNet= nt.Network(st1=64,st2=15,st3=10)
+
+    itemsArgs={Utils.Utils.INPUTS: 64, Utils.Utils.HIDDEN_LAYERS: 15, Utils.Utils.OUTPUTS: 10}
+    myNet= nt.Network(**itemsArgs)
+    '''
+    Aplicacao do Algoritmo PSO, recorrendo à funcao objetivo criada
+    '''
+    x=Utils.Utils()
+    randomValues= [x.generateRandomValue(0,1) for i in range(2)]
+    optionsSwarmAlgorithm= {'c1': randomValues[0], 'c2': randomValues[1], 'w': 0.9} #-->Inercia aplicada uma percentagem de 90%, constante cognitiva e social, foi definido um valor random entre 0 e 1
+    dimensions= (myNet.getInputs() * myNet.getHiddenLayers())+ myNet.getHiddenLayers() + (myNet.getHiddenLayers()* myNet.getOutputs()) + myNet.getOutputs()
+    optimizer= ps.single.GlobalBestPSO(n_particles=100, dimensions=dimensions, options=optionsSwarmAlgorithm)#-->Foram estipuladas 100 partículas, este nº pode variar, e devem ser testados outros valores, de modo a que seja possível estabelcer uma análise da atuacao deste algoritmo
+
+    arrayPartDim= optimizer.dimensions
+    print(arrayPartDim)
+    arraySwarm= numpy.zeros(optimizer.n_particles*optimizer.dimensions).reshape(optimizer.n_particles,optimizer.dimensions)
+    print(arraySwarm)
+    cost, pos = optimizer.optimize(myNet.aplicarFuncaoObjetivoTodasParticulas(arraySwarm,digitos.data,digitos.target), iters=1000)
