@@ -42,7 +42,7 @@ class Network(object):
             - Perda
         '''
 
-        self.weighss.inputWeights= dimensions[:(self.inputs*self.hiddenLayers)].reshape(self.inputs,self.hiddenLayers)
+        self.weighss.inputWeights= dimensions[0:(self.inputs*self.hiddenLayers)].reshape(self.inputs,self.hiddenLayers)
         self.bias.inputBias = dimensions[(self.inputs*self.hiddenLayers):((self.inputs*self.hiddenLayers)+self.hiddenLayers)].reshape(self.hiddenLayers,)
         self.weighss.outputWeights= dimensions[((self.inputs*self.hiddenLayers)+self.hiddenLayers):(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))].reshape(self.hiddenLayers,self.outputs)
         self.bias.outputBias= dimensions[(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs)):(((self.inputs*self.hiddenLayers)+self.hiddenLayers)+(self.hiddenLayers*self.outputs))+self.outputs].reshape(self.outputs,)
