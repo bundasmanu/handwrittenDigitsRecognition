@@ -17,7 +17,7 @@ def listagemDadosDigitos(digits):
     print(digits.images)
     print(digits.target)
     print(digits.target_names)#--> [0 1 2 3 4 5 6 7 8 9]
-    print(digits.images.shape)
+    print(digits.images.shape) 
     print(digits.target.shape)
 
 '''Atraves dos prints efetuados atras, percebi
