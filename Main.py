@@ -69,7 +69,7 @@ if __name__ == "__main__":
     2 Parte do Problema
     '''
 
-    itemsArgs={Utils.Utils.INPUTS: 64, Utils.Utils.HIDDEN_LAYERS: 8, Utils.Utils.OUTPUTS: 10}
+    itemsArgs={Utils.Utils.INPUTS: 64, Utils.Utils.HIDDEN_LAYERS: 6, Utils.Utils.OUTPUTS: 10}
     myNet= nt.Network(**itemsArgs)
 
     '''
@@ -80,9 +80,9 @@ if __name__ == "__main__":
     randomValues= [x.generateRandomValue(0,1) for i in range(2)]
     optionsSwarmAlgorithm= {'c1': randomValues[0], 'c2': randomValues[1], 'w': 0.9} #-->Inercia aplicada uma percentagem de 90%, constante cognitiva e social, foi definido um valor random entre 0 e 1
     dimensions= (myNet.getInputs() * myNet.getHiddenLayers())+ myNet.getHiddenLayers() + (myNet.getHiddenLayers()* myNet.getOutputs()) + myNet.getOutputs()
-    optimizer= ps.single.GlobalBestPSO(n_particles=100, dimensions=dimensions, options=optionsSwarmAlgorithm)#-->Foram estipuladas 10 partículas, este nº pode variar, e devem ser testados outros valores, de modo a que seja possível estabelcer uma análise da atuacao deste algoritmo
+    optimizer= ps.single.GlobalBestPSO(n_particles=120, dimensions=dimensions, options=optionsSwarmAlgorithm)#-->Foram estipuladas 10 partículas, este nº pode variar, e devem ser testados outros valores, de modo a que seja possível estabelcer uma análise da atuacao deste algoritmo
 
-    cost, pos = optimizer.optimize(myNet.aplicarFuncaoObjetivoTodasParticulas, 800 ,dataToLearn=transformBitoUniMatrix(digitos), targets=digitos.target) #Cons 100 iteracoes ideradas 100 iteracoes por particula
+    cost, pos = optimizer.optimize(myNet.aplicarFuncaoObjetivoTodasParticulas, 2000 ,dataToLearn=transformBitoUniMatrix(digitos), targets=digitos.target) #Cons 100 iteracoes ideradas 100 iteracoes por particula
 
     ##--> Obtencao da Accuracy passando o vetor de posicoes retornado da otimizacao do algoritmo PSO
     acc=(myNet.predict(transformBitoUniMatrix(digitos),pos) == digitos.target).mean()
